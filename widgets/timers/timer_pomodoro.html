@@ -16,57 +16,57 @@
             color: #333;
             transition: background-color 0.3s, color 0.3s;
         }
+
         .container {
             text-align: center;
             background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            width: 250px;
+            padding: 15px; /* Padding küçültüldü */
+            border-radius: 8px; /* Köşe yuvarlama biraz daha küçük */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 220px; /* Container genişliği küçültüldü */
             transition: background-color 0.3s, box-shadow 0.3s;
         }
+
         #timer {
-            font-size: 48px;
+            font-size: 36px; /* Font boyutu küçültüldü */
             font-weight: bold;
             margin-bottom: 10px;
             color: #2d87f0;
             transition: color 0.3s;
         }
+
+        h1 {
+            font-size: 18px; /* Başlık font boyutu küçültüldü */
+            margin: 5px 0;
+        }
+
+        h2 {
+            font-size: 16px; /* Timer başlığı font boyutu küçültüldü */
+            margin: 5px 0;
+        }
+
         .btn {
-            font-size: 16px;
-            padding: 10px 20px;
-            margin: 5px;
+            font-size: 14px; /* Buton yazı boyutu küçültüldü */
+            padding: 8px 16px; /* Buton padding küçültüldü */
+            margin: 4px;
             cursor: pointer;
             border: none;
-            border-radius: 5px;
+            border-radius: 4px; /* Buton köşe yuvarlama küçültüldü */
             transition: all 0.3s ease;
         }
-        .btn-start {
-            background-color: #28a745;
-            color: white;
-        }
-        .btn-reset {
-            background-color: #dc3545;
-            color: white;
-        }
-        .btn-darkmode {
-            background-color: #6c757d;
-            color: white;
-        }
-        .btn:hover {
-            opacity: 0.8;
-        }
+
         .progress-bar {
             width: 100%;
-            height: 6px;
+            height: 5px; /* Progress bar yüksekliği küçültüldü */
             background-color: #e0e0e0;
-            border-radius: 5px;
+            border-radius: 3px; /* Köşe yuvarlama küçültüldü */
             margin-top: 10px;
         }
+
         .progress {
             height: 100%;
             background-color: #28a745;
-            border-radius: 5px;
+            border-radius: 3px;
             width: 0%;
             transition: width 1s linear;
         }
@@ -76,57 +76,74 @@
             background-color: #191919;
             color: #fff;
         }
+
         body.dark-mode .container {
             background-color: #444;
-            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
         }
+
         body.dark-mode #timer {
             color: #fff;
         }
+
+        body.dark-mode .btn {
+            color: white;
+        }
+
         body.dark-mode .btn-start {
             background-color: #2d9c46;
         }
+
         body.dark-mode .btn-reset {
             background-color: #c1353d;
         }
+
+        body.dark-mode .btn-switch {
+            background-color: #a4a832;
+        }
+
         body.dark-mode .btn-darkmode {
             background-color: #adb5bd;
         }
+
         body.dark-mode .progress-bar {
             background-color: #666;
         }
+
         body.dark-mode .progress {
             background-color: #2d9c46;
         }
+
     </style>
 </head>
 <body>
 
     <div class="container">
         <h1>Pomodoro</h1>
-        <h2>Break</h2>
-        <p id="timer">5:00</p>
+        <h2 id="timername">Work</h2>
+        <p id="timer">25:00</p>
         <button class="btn btn-start" id="startBtn">Start</button>
         <button class="btn btn-reset" id="resetBtn">Reset</button>
+        <button class="btn btn-switch" id="switchBtn">Switch to Break</button>
         <div class="progress-bar">
             <div class="progress" id="progress"></div>
         </div>
     </div>
 
-   <script type="module">
+    <script type="module">
         //////////////////---> FIREBASE <---//////////////////
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js";
         import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/9.1.2/firebase-database.js";
 
         // Firebase konfigürasyonunu yapıyoruz
         const firebaseConfig = {
-          apiKey: "AIzaSyDIHzmDW0cqVb6DPY_LPYi_sRgn6V8WdjQ",
-          authDomain: "serengokyildiz-54b4a.firebaseapp.com",
-          projectId: "serengokyildiz-54b4a",
-          storageBucket: "serengokyildiz-54b4a.firebasestorage.app",
-          messagingSenderId: "1060154530712",
-          appId: "1:1060154530712:web:efaf162dc2a0b78da329ed",
-          measurementId: "G-95S6KZVCDR"
+            apiKey: "AIzaSyDIHzmDW0cqVb6DPY_LPYi_sRgn6V8WdjQ",
+            authDomain: "serengokyildiz-54b4a.firebaseapp.com",
+            projectId: "serengokyildiz-54b4a",
+            storageBucket: "serengokyildiz-54b4a.firebasestorage.app",
+            messagingSenderId: "1060154530712",
+            appId: "1:1060154530712:web:efaf162dc2a0b78da329ed",
+            measurementId: "G-95S6KZVCDR"
         };
 
         // Firebase'i başlatıyoruz
@@ -140,21 +157,24 @@
 
         // DarkTheme değerini izliyoruz
         onValue(darkThemeRef, (snapshot) => {
-          const isDarkTheme = snapshot.val();
-          
-          // Dark theme'yi uygulamak için body etiketine 'dark-theme' sınıfı ekliyoruz veya kaldırıyoruz
-          if (isDarkTheme) {
-            document.body.classList.add('dark-mode');
-          } else {
-            document.body.classList.remove('dark-mode');
-          }
+            const isDarkTheme = snapshot.val();
+            
+            // Dark theme'yi uygulamak için body etiketine 'dark-theme' sınıfı ekliyoruz veya kaldırıyoruz
+            if (isDarkTheme) {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
         });
 
         //////////////////---> POMODORO <---//////////////////
-        const POMODORO_DURATION = 5 * 60 * 1000; // 5 minutes
-        const STORAGE_KEY = "pomodoro_start_time_break";
+        const POMODORO_DURATION = 25 * 60 * 1000; // 25 minutes (for work)
+        const BREAK_DURATION = 5 * 60 * 1000; // 5 minutes (for break)
+        const STORAGE_KEY = "pomodoro_start_time";
         const DARK_MODE_KEY = "dark_mode";
         let interval;
+        let pomodoroCount = 0; // To keep track of Pomodoro cycles
+        let isPomodoro = true; // Start with Pomodoro, not break
 
         // Dark mode toggle
         function toggleDarkMode() {
@@ -178,21 +198,53 @@
             updateTimer();
         }
 
+        // Switch between Pomodoro and Break
+        function switchMode() {
+            isPomodoro = !isPomodoro;
+            // Modu değiştirdikten sonra start time'ı sıfırlıyoruz, fakat zamanlayıcıyı başlatmıyoruz
+            clearInterval(interval);
+            localStorage.removeItem(STORAGE_KEY);
+            if (isPomodoro) {
+                document.getElementById("switchBtn").textContent = "Switch to Break";
+                document.getElementById("timername").textContent = "Work";
+                document.getElementById("timer").textContent = "25:00";
+                document.getElementById("progress").style.width = "0%";
+                pomodoroCount++;
+            } else {
+                document.getElementById("switchBtn").textContent = "Switch to Pomodoro";
+                document.getElementById("timername").textContent = "Break";
+                document.getElementById("timer").textContent = "5:00";
+                document.getElementById("progress").style.width = "0%";
+            }
+
+            // 4 Pomodoro tamamlandığında kutlama yapıyoruz
+            if (pomodoroCount >= 4) {
+                alert("Congratulations! You've completed 4 Pomodoros!");
+                pomodoroCount = 0; // Pomodoro sayacını sıfırlıyoruz
+            }
+        }
+
+
+
+        // Update timer (Pomodoro or Break based on mode)
         function updateTimer() {
             clearInterval(interval);
+            const duration = isPomodoro ? POMODORO_DURATION : BREAK_DURATION;
+
             interval = setInterval(() => {
                 const startTime = localStorage.getItem(STORAGE_KEY);
                 if (!startTime) return;
 
                 const elapsed = Date.now() - parseInt(startTime);
-                const remaining = POMODORO_DURATION - elapsed;
+                const remaining = duration - elapsed;
 
                 if (remaining <= 0) {
                     clearInterval(interval);
                     localStorage.removeItem(STORAGE_KEY);
                     document.getElementById("timer").textContent = "00:00";
                     document.getElementById("progress").style.width = "100%";
-                    alert("Mola tamamlandı!");
+
+                    switchMode(); // Switch when Pomodoro or Break ends
                 } else {
                     displayTime(remaining);
                     updateProgress(remaining);
@@ -207,16 +259,30 @@
         }
 
         function updateProgress(ms) {
-            const progress = (POMODORO_DURATION - ms) / POMODORO_DURATION * 100;
-            document.getElementById("progress").style.width = `${progress}%`;
+            if (isPomodoro) {
+                const progress = (POMODORO_DURATION - ms) / POMODORO_DURATION * 100;
+                document.getElementById("progress").style.width = `${progress}%`;
+            } else {
+                const progress = (BREAK_DURATION - ms) / BREAK_DURATION * 100;
+                document.getElementById("progress").style.width = `${progress}%`;
+            }
+            
         }
 
         function resetPomodoro() {
             clearInterval(interval);
             localStorage.removeItem(STORAGE_KEY);
-            document.getElementById("timer").textContent = "5:00";
-            document.getElementById("progress").style.width = "0%";
+
+            // Eğer Pomodoro modunda isek, süreyi 25 dakika olarak sıfırlıyoruz
+            if (isPomodoro) {
+                document.getElementById("timer").textContent = "25:00";
+                document.getElementById("progress").style.width = "0%";
+            } else {
+                document.getElementById("timer").textContent = "5:00";
+                document.getElementById("progress").style.width = "0%";
+            }
         }
+
 
         // DOM content loaded olduğunda başlatma işlemi
         document.addEventListener("DOMContentLoaded", () => {
@@ -228,6 +294,7 @@
             // Button click event listeners
             document.getElementById("startBtn").addEventListener("click", startPomodoro);
             document.getElementById("resetBtn").addEventListener("click", resetPomodoro);
+            document.getElementById("switchBtn").addEventListener("click", switchMode);
         });
     </script>
 </body>
